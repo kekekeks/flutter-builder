@@ -1,4 +1,4 @@
-name: Build Flutter Engine
+name: Build Impeller SDK
 
 on:
   push:
