@@ -3,6 +3,7 @@ set -x
 set -e
 export PATH=`pwd`/depot_tools:$PATH
 cd flutter
+cp engine/scripts/standard.gclient .gclient
 gclient sync -D
 
 GN_ARGS=""
