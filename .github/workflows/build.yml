@@ -1,0 +1,67 @@
+name: Build Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-debian:
+    name: Build on Debian 12
+    runs-on: ubuntu-latest
+    container: debian:12
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Create directory structure
+        shell: bash
+        run: |
+          mkdir -p flutter/engine/src/out/host_release/zip_archives/somedir
+      
+      - name: Create file with current date
+        shell: bash
+        run: |
+          echo "$(date)" > flutter/engine/src/out/host_release/zip_archives/somedir/somefile.txt
+          echo "Created file with content:"
+          cat flutter/engine/src/out/host_release/zip_archives/somedir/somefile.txt
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-debian-12
+          path: flutter/engine/src/out/host_release/zip_archives/
+          if-no-files-found: error
+  
+  build-windows-macos:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Create directory structure
+        shell: bash
+        run: |
+          mkdir -p flutter/engine/src/out/host_release/zip_archives/somedir
+      
+      - name: Create file with current date
+        shell: bash
+        run: |
+          echo "$(date)" > flutter/engine/src/out/host_release/zip_archives/somedir/somefile.txt
+          echo "Created file with content:"
+          cat flutter/engine/src/out/host_release/zip_archives/somedir/somefile.txt
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts-${{ matrix.os }}
+          path: flutter/engine/src/out/host_release/zip_archives/
+          if-no-files-found: error
