@@ -12,8 +12,6 @@ $BUILDDIR = "host_release"
 engine\src\flutter\tools\gn.bat $GN_ARGS --runtime-mode release
 $BUILDDIR = "engine/src/out/$BUILDDIR"
 
-Get-ChildItem -Recurse $BUILDDIR
-
 ninja -C $BUILDDIR sdk
 
 Get-ChildItem -Recurse -Filter impeller_sdk.zip
