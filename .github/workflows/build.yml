@@ -1,0 +1,63 @@
+name: Build Flutter Engine
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-ubuntu:
+    name: Build on Ubuntu 22.04
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git curl python3 python3-pip wget unzip ninja-build \
+            build-essential libglib2.0-dev pkg-config clang cmake xz-utils
+      
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      
+      - name: Make build script executable
+        run: chmod +x build.sh
+      
+      - name: Run build
+        run: ./build.sh
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: impeller-sdk-ubuntu-22.04
+          path: flutter/engine/src/out/host_debug/zip_archives/**/*.zip
+          if-no-files-found: warn
+
+  build-macos:
+    name: Build on macOS
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      
+      - name: Make build script executable
+        run: chmod +x build.sh
+      
+      - name: Run build
+        run: ./build.sh
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: impeller-sdk-macos
+          path: flutter/engine/src/out/host_debug/zip_archives/**/*.zip
+          if-no-files-found: warn
