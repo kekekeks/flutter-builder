@@ -71,3 +71,25 @@ jobs:
           name: impeller-sdk-macos
           path: flutter/engine/src/out/*/zip_archives/**/*.zip
           if-no-files-found: warn
+
+  build-windows:
+    name: Build on Windows
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Run build
+        shell: pwsh
+        run: ./build.ps1
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: impeller-sdk-windows
+          path: flutter/engine/src/out/*/zip_archives/**/*.zip
+          if-no-files-found: warn
