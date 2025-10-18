@@ -125,15 +125,7 @@ jobs:
           path: artifacts
 
       - name: Generate release id
-        run: |
-          echo FLUTTER_ID=`git submodule status flutter|awk '{print $1}'|sed 's/-//'`
-          echo "RELEASE_ID=$FLUTTER_ID" >> $GITHUB_ENV
-          echo "Build for commit https://github.com/flutter/flutter/commit/$FLUTTER_ID" > release.txt  
-          mkdir files
-          for dir in artifacts/*; do
-            cp "$dir"/impeller_sdk.zip files/`basename $dir`.zip
-          done
-
+        run: ./genrelease.sh 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
