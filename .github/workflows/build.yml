@@ -17,7 +17,7 @@ jobs:
       - uses: msys2/setup-msys2@v2
         id: setup-msys2
 
-      - uses: kekekeks/setup-windows10-sdk-action@with-debuggers-1
+      - uses: kekekeks/setup-windows10-sdk-action@install-all-features-1
         with:
           sdk-version: 22621
           
