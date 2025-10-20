@@ -72,19 +72,15 @@ jobs:
           name: impeller-sdk-macos-arm64
           path: flutter/engine/src/out/*/zip_archives/**/*.zip
           if-no-files-found: warn
-
   build-windows:
     name: Build on Windows
     runs-on: windows-latest
-    if: false # Temporarily disabled due to build error
 
     steps:
-      - uses: msys2/setup-msys2@v2
-        id: setup-msys2
-
-      - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2.4
+      - uses: kekekeks/setup-windows10-sdk-action@install-all-features-1
         with:
           sdk-version: 22621
+          
       - name: Checkout code
         uses: actions/checkout@v4
         with:
@@ -94,13 +90,6 @@ jobs:
         shell: pwsh
         run: ./build.ps1
 
-      - name: Debug build
-        uses: mxschmitt/action-tmate@v3
-        if: ${{ failure() }}
-        with:
-          msys2-location: ${{ steps.setup-msys2.outputs.msys2-location }}
-
-
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         if: always()
@@ -109,11 +98,10 @@ jobs:
           path: flutter/engine/src/out/*/zip_archives/**/*.zip
           if-no-files-found: warn
 
-
   create-release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
-    needs: [build-macos, build-ubuntu ] #, build-windows]
+    needs: [build-macos, build-ubuntu, build-windows]
     if: github.event_name == 'push'
     permissions:
       contents: write
